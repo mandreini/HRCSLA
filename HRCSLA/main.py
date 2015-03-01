@@ -25,10 +25,6 @@ except:
 def start_log(): #infinite loop, runs main() every minute
     t = time.gmtime()
     while True:
-        if time.gmtime()[4] != t[4]:
-            add_new_reports(manual_edit.indiv_report())
-            main()
-            start_log()
         if time.gmtime()[1] != t[1]:
             pass
             #refresh month database
@@ -39,6 +35,12 @@ def start_log(): #infinite loop, runs main() every minute
         if time.gmtime()[2] != t[2]:
             pass
             #refresh day database
+        
+        if time.gmtime()[4] != t[4]:
+            add_new_reports(manual_edit.indiv_report())
+            main()
+            start_log()
+
 
 def add_new_reports(new_reports):
     #input: list of strings directly inputted ("Reporter IGN verdict day-month-year")
@@ -139,7 +141,7 @@ this_week_reports = {"name": sql.tables[2]} #same as all_time, but only past 7 d
 current_day_reports = {"name": sql.tables[3]} #same as all_time, but only today
 total_records = [] #[[<reporter>, <IGN>, <verdict>, <mod_who_banned>, [dd,mm,yyy]], ... ]
 name_list = [] #to get the id for updating the database
-mods, bans, cleans = customization.open_files()
+bans, cleans = customization.open_files()
 
 #setup the database
 for t in sql.tables:

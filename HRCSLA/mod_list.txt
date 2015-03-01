@@ -1,8 +1,0 @@
-#mods of HRC. Add the moderator skype id below
-#ex: ma56nin, _not_ ma56nin9 /Matt
-#DO NOT change the topic of this document. Doing so removes the validation
-#capabilities. Only alter text below this line.
-fmb9000
-britwiz9
-kendrakblue
-live:ma56nin
