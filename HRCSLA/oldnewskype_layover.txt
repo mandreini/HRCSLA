@@ -1,0 +1,3 @@
+#old_skype - new_skype layover -> preserves record even when players switch Skype accounts
+#syntax: <new_skype> ** <old_skype> <old(er)_skype> ...
+live:ma56nin9**matt_andreini

@@ -1,0 +1,41 @@
+$def with (records)
+
+<div class="title">
+  <h1>The HRC records for $records[0].Reporter</h1>
+</div>
+
+  <table>
+    <tr>
+      <td><div class="records">
+        <body>
+          <div class="data">
+            <div class="top_line">
+              <ul class="list_top_line">
+                <li><h><u>Skype ID</u></h></li>
+                <li><h><u>Bans</u></h></li>
+                <li><h><u>Clean</u></h></li>
+                <li><h><u>Accuracy (%)</u></h></li>
+              </ul>
+            </div>
+          </div>
+          $for r in records:
+          <div class="data">
+            <ul class="listdata">
+              <li id="first">$r.Reporter</li>
+	      <li id="second">$r.Ban</li>
+              <li id="third">$r.Clean</li>
+              <li id="fourth">$r.Accuracy</li>
+            </ul>
+          </div>
+        </body>
+      </div></td>
+      <td valign="top"><div class="times">
+        <ul>
+          <li><a href="/all">All time records</a></li>
+          <li><a href="/month">Last month records</a></li>
+          <li><a href="/week">This week records</a></li>
+          <li><a href="/day">Today's records</a></li>
+        </ul>
+      </div></td>
+    </tr>
+  </table>  

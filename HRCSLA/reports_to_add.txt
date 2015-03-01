@@ -1,0 +1,3 @@
+#This file is for manually adding a report to the system.
+#The report structure is as follows:
+#Reporter IGN verdict day-month-year ; mind the spacing and hyphens! Use numbers for date only
