@@ -20,7 +20,17 @@ def _close():
     cursor.close()
     db.close()
 
-def _retrieve_info(table):
+def _create_table(table):
+    cursor.execute("CREATE TABLE %s ( \
+      id int auto_increment not Null primary key, \
+      UserID char(10), \
+      Name char(64), \
+      BanCount int, \
+      CleanCount int, \
+      Accuracy char(3), \
+      Total int) " % table)
+          
+def retrieve_info(table):
     cursor.execute("SELECT * FROM %s" % table)
     fields = cursor.fetchall()
     my_fields = [field for field in fields]
@@ -29,7 +39,6 @@ def _retrieve_info(table):
 def update(userId, verdict, record, rep_name, table):
     #report: [<reporter>, <IGN>, <verdict>, <date in [yyyy,mm,dd]>, <mod-who-banned>]
     #record: [<ban count>, <clean count>]
-
     db, cursor = _connect()
     if verdict == "clean":
         verdict = "CleanCount"
@@ -60,7 +69,9 @@ def update(userId, verdict, record, rep_name, table):
         cursor.execute("UPDATE %s SET Name = '%s' WHERE UserID = '%s';" % (table, rep_name, userId))
     
     db.commit()
-    _close()    
+    
+    return record
+    
 
 #debug stuffs
 db, cursor = _connect()

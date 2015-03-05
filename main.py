@@ -111,6 +111,7 @@ def update_database(table_dict, user, verdict): #add the report to the database
     #table_dict: which database to update, string, string
     if table_dict["name"] == sql.tables[0]: #to allow for different tables
         table = sql.tables[0]
+        fmb = True
     elif table_dict["name"] == sql.tables[1]:
         table = sql.tables[1]
     elif table_dict["name"] == sql.tables[2]:
@@ -145,8 +146,9 @@ def update_database(table_dict, user, verdict): #add the report to the database
         
     conn.commit()
     conn.close()    
-    fmbmysql.update(user, verdict, [table_dict[rep_name][0], table_dict[rep_name][1]], rep_name, table)
-    #function to update fmb's database in other script
+    if fmb:
+        fmbmysql.update(user, verdict, [table_dict[rep_name][0], table_dict[rep_name][1]], rep_name, table)
+        #function to update fmb's database in other script
 
 #set up report structure
 HRCBot = SlackBot.Bot()
