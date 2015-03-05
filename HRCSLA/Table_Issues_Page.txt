@@ -1,7 +1,4 @@
-$def with (page)
-
-<html>
-<head>
+<html><head>
   <title>HRCWA</title>
   <style type="text/css"> 
 
@@ -23,9 +20,9 @@ $def with (page)
       padding: 1px; }
 
     .data {
-      width: 300%;
+      width: 100%;
       background: white;
-      text-align: left;	
+      text-align: left; 
       color: black;
       border: 1px solid grey;
       border-top-left-radius: 3px;
@@ -99,17 +96,89 @@ $def with (page)
   </style>
 </head>
 
-<div class="header">
+<body><div class="header">
   <ul class="listfooter">
     <li> <a href="/" style="color: #CCFFFF;">Home</a> </li>
     <li> <a href="/donate" style="color: #CCFFFF;">Donate</a> </li>
     <li> <a href="/contact" style="color: #CCFFFF;">Contact</a> </li>
-    <li> <a href="/signin" style="color: #CCFFFF;">Sign in - coming soon!</a> <li>
-  </ul>
+    <li> <a href="/signin" style="color: #CCFFFF;">Sign in - coming soon!</a> </li><li>
+  </li></ul>
 </div>
 
 <div class="main">
-  $:page
+  
+
+  <div class="title">
+    <h1>The HRC records for all_time</h1>
+  </div>
+
+  <table>
+    <tbody><tr>
+      <td><div class="records">
+        <div class="data">
+          <div class="top_line">
+            <ul class="list_top_line">
+              <li><h><u>Skype ID</u></h></li>
+              <li><h><u>Bans</u></h></li>
+              <li><h><u>Clean</u></h></li>
+              <li><h><u>Accuracy (%)</u></h></li>
+            </ul>
+          </div>
+        </div>
+        <div class="data">
+          <ul class="listdata">
+            <li id="first">artyom0107</li>
+            <li id="second">1</li>
+            <li id="third">0</li>
+            <li id="fourth">100</li>
+          </ul>
+        </div>
+        <div class="data">
+          <ul class="listdata">
+            <li id="first">alexpenguinmc</li>
+            <li id="second">1</li>
+            <li id="third">0</li>
+            <li id="fourth">100</li>
+          </ul>
+        </div>
+        <div class="data">
+          <ul class="listdata">
+            <li id="first">artjom0107</li>
+            <li id="second">1</li>
+            <li id="third">0</li>
+            <li id="fourth">100</li>
+          </ul>
+        </div>
+        <div class="data">
+          <ul class="listdata">
+            <li id="first">iminecraftpvp</li>
+            <li id="second">1</li>
+            <li id="third">0</li>
+            <li id="fourth">100</li>
+          </ul>
+        </div>
+        <div class="data">
+          <ul class="listdata">
+            <li id="first">U03LLUY73</li>
+            <li id="second">1</li>
+            <li id="third">0</li>
+            <li id="fourth">100</li>
+          </ul>
+        </div>
+       </div></td>
+       <td></td>
+       <td valign="top"><div class="times">
+        <ul>
+          <li><a href="/all">All time records</a></li>
+          <li><a href="/month">Last month records</a></li>
+          <li><a href="/week">This week records</a></li>
+          <li><a href="/day">Today's records</a></li>
+        </ul>
+      </div></td>
+    </tr>
+  </tbody></table>  
+
+
 </div>
 
 <div class="footer">
@@ -121,4 +190,5 @@ $def with (page)
   </ul>
 </div>
 
-</html>
+
+</body></html>
