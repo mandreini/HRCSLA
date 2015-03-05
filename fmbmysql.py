@@ -10,7 +10,6 @@ host     = "vweb20.nitrado.net"
 user     = "ni78781_3sql4"
 password = "295b4e12"
 dbname   = "ni78781_3sql4"
-table    = "hrc_data"
 
 def _connect():
     db = MySQLdb.connect(host, user, password, dbname)
