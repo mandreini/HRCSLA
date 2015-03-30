@@ -6,11 +6,6 @@ Contact: ma56nin@hotmail.com
 
 import MySQLdb
 
-host     = "vweb20.nitrado.net"
-user     = "ni78781_3sql4"
-password = "295b4e12"
-dbname   = "ni78781_3sql4"
-
 def _connect():
     db = MySQLdb.connect(host, user, password, dbname)
     cursor = db.cursor()
