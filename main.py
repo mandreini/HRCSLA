@@ -9,6 +9,7 @@ try:
     import sql
     import manual_edit
     import features
+    import fmbmysql
     import SlackBot
 except:
     print("customization, sql, manual_edit, features or SlackBot not able to import.")
@@ -110,30 +111,44 @@ def update_database(table_dict, user, verdict): #add the report to the database
     #table_dict: which database to update, string, string
     if table_dict["name"] == sql.tables[0]: #to allow for different tables
         table = sql.tables[0]
+        fmb = True
     elif table_dict["name"] == sql.tables[1]:
         table = sql.tables[1]
     elif table_dict["name"] == sql.tables[2]:
         table = sql.tables[2]
     elif table_dict["name"] == sql.tables[3]:
         table = sql.tables[3]
+    #table = table_dict['name']
         
     rep_name = HRCBot.user_id_name_database[user]
     conn = sqlite3.connect("HRC_records.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM " + table + " WHERE USER = ?",(user,))
+    cursor.execute("SELECT id FROM %s WHERE user = '%s';" % (table, user))
     data = cursor.fetchall()
     if len(data) == 0: #if the reporter is not in the database, add him.
-        sql.db.insert(table,user=user, Reporter=rep_name, Ban=0, Clean=0, Accuracy="0.0", Total=0)
-    conn.execute("UPDATE " + table + " SET " + verdict + " = " + verdict + " + 1 WHERE user = '" + user + "';")
-    conn.execute("UPDATE " + table + " SET Total = Total + 1 WHERE user = '" + user + "';")
+        sql.db.insert(table, user=user, Reporter=rep_name, Ban=0, Clean=0, Accuracy="0.0", Total=0)
+        
+    conn.execute("UPDATE %s SET %s = %s + 1 WHERE user = '%s';" % (table, verdict, verdict, user))
+    conn.execute("UPDATE %s SET Total = Total + 1 WHERE user = '%s';" % (table, user))
+    
     if table_dict[rep_name][0] == 0 and table_dict[rep_name][1] == 0:
         new_acc = 0.
     else:
         new_acc = int((float(table_dict[rep_name][0]) / float(table_dict[rep_name][0] + table_dict[rep_name][1]))*100.)
     conn.execute("UPDATE " + table + " SET Accuracy = " + str(new_acc) + " WHERE user = '" + user + "';")
+    conn.execute("UPDATE %s SET Accuracy = %s WHERE user = '%s';" % (table, str(new_acc), user))
+    
+    conn.execute("SELECT Reporter from %s WHERE user = '%s';" % (table, user))   
+    data = conn.fetchall()[0][0]
+    if data != rep_name:
+        conn.execute("UPDATE %s SET Reporter = %s WHERE user = '%s';" % (table, rep_name))
+        #note, prone to SQL injection!
+        
     conn.commit()
     conn.close()    
-    #function to update fmb's database in other script
+    if fmb:
+        fmbmysql.update(user, verdict, [table_dict[rep_name][0], table_dict[rep_name][1]], rep_name, table)
+        #function to update fmb's database in other script
 
 #set up report structure
 HRCBot = SlackBot.Bot()

@@ -1,0 +1,9 @@
+To-Do for site:
+
+Home page
+Contact page
+Get a background
+Make the All time / Last month / This week / Today 's records be fixed (moves down on scroll)
+Donate page - when up on server for ease with paypal!
+
+(Sign in comes much later)

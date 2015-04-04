@@ -1,0 +1,37 @@
+<!--http://i.imgur.com/rETv6n1.jpg, http://i.imgur.com/O03QEoY.jpg-->
+    body {
+      background: url(http://i.imgur.com/IQBRvl3.png); 
+      background-repeat: no repeat;
+      background-attachment: fixed; }
+
+    .title {
+      text-align: left;
+      margin-left: 100px;
+      margin-top: -10px;
+      color: black; }
+
+    ul {
+      columns: 4;
+      -webkit-columns: 4; 
+      -moz-columns: 4;}
+
+      .data {
+        background: white;
+        text-align: left;
+        color: black;
+        border: 1px solid grey;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        margin-right: 400px;
+        margin-left: 50px; }
+
+      div.top_line {
+       text-decoration: underline; 
+       font-weight: bold; 
+       font-size: 125%; }
+
+    .header {
+      text-align: center;
+      color: #c0c0c0;
+      background: black; }
+

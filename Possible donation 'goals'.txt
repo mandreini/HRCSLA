@@ -1,0 +1,9 @@
+Show detailed record (who you reported and the verdict)
+Able to remove a false clean
+Stats wipe 
+Show overall stats
+
+Never:
+Adding bans/removing cleans without cause
+Being able to see full records 
+
