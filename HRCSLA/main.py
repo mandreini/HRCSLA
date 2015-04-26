@@ -8,6 +8,7 @@ try:
     import config
 except ImportError:
     print("config.py file not found.")
+
 try:
     import customization
     import features

@@ -31,7 +31,7 @@ class Bot(object):
         self.client_secret = config.client_secret
         self.code = config.code  # unknown how this works, doesn't seem to matter...
         self.redirect_uri = config.redirect_uri
-        self.bot_token = config.bot_token  # HRCbot - requires integration
+        self.bot_token = config.bot_token  # HRCBot - requires integration
 
     def create_client(self):
         # Creates self.client for convenience
@@ -64,6 +64,12 @@ class Bot(object):
             all_users[member['id']] = member['name']            
         self.user_id_name_database = all_users
         # {<id>: <name>}
+
+    def get_id_from_user(self, username):
+        for user in self.user_id_name_database:
+            if self.user_id_name_database[user] == username:
+                return user
+        return None
                 
     def get_id_of_channel(self, name):
         # determines the id of a channel given its common name (debugging purposes)
@@ -75,16 +81,16 @@ class Bot(object):
         for key in self.user_channels.keys():
             if self.user_channels[key] == name:
                 return key
-        return "Channel not found"
+        return None
         
     def get_previous_messages(self):
-        # Takes all previous messages in the chat and adds to large dictionary. (Note: check on memory issues...)
+        # Adds the previous 50 messages to a dictionary to store for later
         prev_messages = {}
         for channel in self.channels.body['channels']:
             channel_id = channel['id']
             if channel_id in self.user_channels.keys():
                 history_of_channel = self.client.channels.history(channel_id)
-                messages_of_channel = history_of_channel.body['messages']
+                messages_of_channel = history_of_channel.body['messages'][-50:]
                 prev_messages[channel_id] = messages_of_channel
             
         self.prev_messages = prev_messages
@@ -94,7 +100,7 @@ class Bot(object):
         # Anyone with Slack rank 'Admin', 'Owner' or 'Primary Owner' is assumed to be a moderator
         mod_lst = []
         for user in self.client.users.list().body['members']:
-            if "is_admin" in user.keys():            
+            if "is_admin" in user.keys():
                 if user['is_admin']:
                     mod_lst.append(user['id'])
         self.mod_lst = mod_lst
@@ -147,7 +153,7 @@ class Bot(object):
         if msg['user'] in self.mod_lst:
             reporters, verdict, ign, mod, link = self.make_report(msg, channel)
             if command == "remove":
-                features.remove_report(ign)
+                features.remove_report(ign, msg['user'])
                 return
             for reporter in reporters:
                 reports.append([reporter, ign, verdict, mod, channel, link])
@@ -192,5 +198,15 @@ class Bot(object):
             link = "NULL"
 
         return reporters, verdict, ign, mod, link
+
+    def send_dm(self, userid, message):
+        # This sends a direct message to the user for user feedback purposes
+        # inputs:
+            # userid: string - user id of the user to send the message to
+            # message: string - message to send them
+
+        dm = self.client.im.open(userid)
+        dm_id = dm.body['channel']['id']
+        self.client.chat.post_message(dm_id, message, username="HRC Bot")
 
 HRCBot = Bot()

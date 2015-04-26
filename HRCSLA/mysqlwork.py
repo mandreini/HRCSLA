@@ -5,23 +5,38 @@ Contact: ma56nin@hotmail.com
 """
 
 try:
-    import MySQLdb
+    import pyodbc
 except ImportError:
-    print("MySQLdb python module not able to import")
+    print("pyodbc python module not able to import")
+    exit()
 
 import config
 import datetime
 
+driver = config.driver
 host = config.host
 user = config.user
 password = config.password
 dbname = config.dbname
 
+# try:
+#     import MySQLdb
+# except ImportError:
+#     print("MySQLdb python module not able to import")
+#     exit()
+#
+# def _connect():
+#     db = MySQLdb.connect(host, user, password, dbname)
+#     cursor = db.cursor()
+#     return db, cursor
 
 def _connect():
-    db = MySQLdb.connect(host, user, password, dbname)
+    # connect to database
+    db = pyodbc.connect("Driver={%s};SERVER=%s;DATABSE=%s;UID=%s;PWD=%s;"
+                        % (driver, host, dbname, user, password))
     cursor = db.cursor()
     return db, cursor
+
 
 def add_records(table, report):
     # This process updates the database table appropriately
@@ -88,7 +103,7 @@ def retrieve_values(table, value, cat, time_frame=-1):
 
     return count, act_list
 
-def remove_row(ign):
+def remove_row(ign, table=config.table):
     # This is used to remove a row if there is a false verdict or other similar reason
     # inputs:
         # IGN: string - the IGN of the hacker of the report to be removed

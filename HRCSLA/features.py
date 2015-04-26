@@ -35,16 +35,16 @@ def get_activity(table, user, mod_list, time_frame=-1):
         else:
             return "The reporter, " + user + " has reported " + count + " reports. These reports are: \n" + "\n".join(act_list)
 
-def remove_report(ign):
+def remove_report(ign, userid):
     # This will remove a report from the database given the IGN of the hacker. ONLY for mod use with !remove
     # Will remove the the first entry found (i.e. if !clean but then !banned later, !remove)
     # inputs:
         # IGN: string - IGN of the hacker to be removed
 
     if mysqlwork.remove_row(ign):
-        # script for 'only you can see' or DM
+        message = "Report successfully removed!"
+        slackbot.HRCBot.send_dm(userid, message)
         pass
-
 
 def add_report(message, channel):
     # This will allow reports to be added to the database
