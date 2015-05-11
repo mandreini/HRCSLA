@@ -3,4 +3,7 @@
   <data-source name="MySQL - ni78781_3sql4@vweb20.nitrado.net" uuid="e13a002a-47ad-4104-9bb8-9b299eccef20">
     <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
   </data-source>
+  <data-source name="SQL Server - hrc_test@31.193.2.78" uuid="dfb9cfc0-a826-4edb-b588-f3492e3346ba">
+    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
+  </data-source>
 </component>

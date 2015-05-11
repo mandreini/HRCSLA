@@ -36,17 +36,23 @@ def start_log():  # infinite loop, runs main() every minute
 
 
 def main():
-    # Main procedure: gets new messages and logs them
-    HRCBot.get_new_messages()
-    for new_report in HRCBot.new_reports:
+    """ Main procedure: gets new messages and logs them """
+
+    hrcbot.get_new_messages()
+    for new_report in hrcbot.new_reports:
         write_report(new_report)
         mysqlwork.add_records(table, new_report)
 
 
 def write_report(report):
-    # Creates local record for backup
-    # inputs:
-    # report: [<reporter>, <IGN>, <verdict>, <date in [yyyy,mm,dd]>, <mod-who-banned>]
+    """ Creates local record for backup
+    :param report: [reporter, IGN, verdict, date in [yyyy,mm,dd], mod_who_banned]
+        reporter: string - userID of the reporter
+        IGN: string - IGN of the player reported
+        verdict: string - verdict of the mod
+        date: list (of ints) - date of the report
+        mod_who_banned: string - userID of the mod who addressed the report"""
+
     b = open("reports_record.dat", "r+")
     b.readlines()
     report_to_write = '\n' + str(report[0]) + "\t" + str(report[1]) + "\t" + str(report[2]) + "\t" + \
@@ -55,13 +61,13 @@ def write_report(report):
     b.close()
 
 # Set up report structure
-HRCBot = slackbot.Bot()
+hrcbot = slackbot.Bot()
 table = config.table
 bans, cleans = customization.open_files()
 
 channel_names = []
-for key in HRCBot.user_channels.keys():
-    channel_names.append(HRCBot.user_channels[key])
+for key in hrcbot.user_channels.keys():
+    channel_names.append(hrcbot.user_channels[key])
 
 print("Logging the reports from " + ', '.join(channel_names))  # change
 

@@ -31,7 +31,13 @@ dbname = config.dbname
 #     return db, cursor
 
 def _connect():
-    # connect to database
+    """
+    connect to database
+    :return:
+        db: pyodbc db object of connected database
+        cursor: pyodbc cursor object of connected database
+    """
+
     db = pyodbc.connect("Driver={%s};SERVER=%s;DATABSE=%s;UID=%s;PWD=%s;"
                         % (driver, host, dbname, user, password))
     cursor = db.cursor()
@@ -39,41 +45,42 @@ def _connect():
 
 
 def add_records(table, report):
-    # This process updates the database table appropriately
-    # inputs:
-        # table: string - name of the table to update
-        # userID: string - Slack ID of the user who reported
-        # IGN: string - Ban, Clean or Indeterminate
-        # verdict: string - BanCount or CleanCount
-        # mod: string - ID of the mod who banned
-        # channel: string - ID of the channel the report is in
-        # link="NULL": link to video (if applicable)
-
+    """
+    This process updates the database table appropriately
+    :param table: string - name of the table to update
+    :param report: [userID, IGN, verdict, mod, channel, link="Null"
+        userID: string - Slack ID of the user who reported
+        IGN: string - Ban, Clean or Indeterminate
+        verdict: string - BanCount or CleanCount
+        mod: string - ID of the mod who banned
+        channel: string - ID of the channel the report is in
+        link="NULL": link to video (if applicable)
+    """
     db, cursor = _connect()
 
     userId, ign, verdict, mod, channel, link = (i for i in report)
+    sqlcode = "INSERT INTO %s (UserID, IGN, Verdict, ModID, Channel, Link) " \
+              "VALUES ('%s', '%s','%s', '%s', '%s', '%s');" \
+              % (table, userId, ign, verdict, mod, channel, link)
 
-    db.execute("INSERT INTO %s (UserID, IGN, Verdict, ModID, Channel, Date, Link)" +
-               "VALUES ('%s', '%s', '%s','%s', '%s', ''%s', 'SELECT CURDATE()', %s');"
-               % (table, userId, ign, verdict, channel, mod, link))
+    db.execute(sqlcode)
 
     db.commit()
     db.close()
-    cursor.close()
+
 
 def retrieve_values(table, value, cat, time_frame=-1):
-    # This is used for activity tracking on players and mods
-    # inputs:
-        # table: string - table to retrieve values from
-        # value: string - UserID or ModID
-        # time_frame: integer - number of days prior
-    # outputs:
-        # count: amount of times reported/verdicts given
-        # act_list: list of the activity of the mod
+    """
+    This is used for activity tracking on players and mods
+    :param table: string - table to retrieve values from
+    :param value: string - UserID or ModID
+    :param cat: string - category to retrieve the values from
+    :param time_frame: integer - number of days prior
+    :return:
+        count: amount of times reported/verdicts given
+        act_list: list of the activity of the mod
+    """
 
-    # db.execute("SELECT %s FROM %s WHERE DATEDIFF(CURDATE(), Date) <= %s;" % (value, table, time_frame))
-
-    # pull all activity of a player
     db, cursor = _connect()
     act_list = []
 
@@ -103,12 +110,14 @@ def retrieve_values(table, value, cat, time_frame=-1):
 
     return count, act_list
 
+
 def remove_row(ign, table=config.table):
-    # This is used to remove a row if there is a false verdict or other similar reason
-    # inputs:
-        # IGN: string - the IGN of the hacker of the report to be removed
-    # outputs:
-        # success: Boolean - returns True if report found (and removed), False if not
+    """
+    This is used to remove a row if there is a false verdict or other similar reason
+    :param ign: string - the IGN of the hacker of the report to be removed
+    :param table: string - table to remove the value from
+    :return: success: Boolean - returns True if report found (and removed), False if not
+    """
 
     db, cursor = _connect()
 

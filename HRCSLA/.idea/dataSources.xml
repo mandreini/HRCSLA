@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="48812867">
+  <component name="DataSourceManagerImpl" format="xml" hash="2502657988">
     <data-source source="LOCAL" name="MySQL - ni78781_3sql4@vweb20.nitrado.net" read-only="true" uuid="e13a002a-47ad-4104-9bb8-9b299eccef20">
       <driver-ref>mysql</driver-ref>
       <auto-commit>false</auto-commit>
@@ -13,6 +13,12 @@
         <property name="characterSetResults" value="utf8" />
         <property name="yearIsDateType" value="false" />
       </driver-properties>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="SQL Server - hrc_test@31.193.2.78" uuid="dfb9cfc0-a826-4edb-b588-f3492e3346ba">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://31.193.2.78;databaseName=hrc_test</jdbc-url>
       <libraries />
     </data-source>
   </component>
