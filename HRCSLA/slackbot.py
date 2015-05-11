@@ -125,7 +125,6 @@ class Bot(object):
 
         self.create_channels()  # Allows for new channels
         channel_lst = self.user_channels
-        lst_msgs = {}
         new_msgs = {}
         
         for channel in channel_lst:
