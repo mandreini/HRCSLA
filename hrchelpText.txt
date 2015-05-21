@@ -1,0 +1,15 @@
+Hello %s, you are receiving this message because you typed '!hrchelp' into %s.
+Some commonly asked questions about the HRC logging app are:
+
+Q: How is my accuracy calculated?
+A: Bans / (Bans + Clean) * 100% ; that is, the amount of players you reported that were banned or determined clean
+
+Q: How much do clean reports count against me?
+A: Not much. Only that past 30 days worth of reports are used and you will be able to easily discern cheaters from clean players quickly after a short time, so don't worry too much about reporting someone you were 80% sure but turned out clean.
+
+Q: I reported a hacker and then someone else reported him, is he stealing my report??
+A: No, you both will get credit for the report. This is to encourage players to still report someone they deem hacking and get credit for, even if they were slower than someone else. This also sends another alert to any moderators who might have missed the first report!
+
+Q: I have more questions/comments, who do I contact?
+A: ma56nin is the writer of the HRC logging system, he can be reached on Slack regularly or via e-mail (ma56nin@hotmail.com)
+

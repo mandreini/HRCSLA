@@ -43,7 +43,7 @@ class Bot(object):
     def create_channels(self):
         """ Determines channels to log reports from, channel must have "reports" in its name """
 
-        user_channels = { }
+        user_channels = {}
         channels = self.client.channels.list()
         self.channels = channels
         for channel in channels.body['channels']:
@@ -54,7 +54,7 @@ class Bot(object):
 
     def determine_users_of_channel(self):
         """ Determines which users are in which channel """
-        users = { }
+        users = {}
         for channel in self.channels.body['channels']:
             users[channel['id']] = channel['members']
         self.users_by_channel = users
@@ -100,7 +100,7 @@ class Bot(object):
             channel_id = channel['id']
             if channel_id in self.user_channels.keys():
                 history_of_channel = self.client.channels.history(channel_id)
-                messages_of_channel = history_of_channel.body['messages'][-50:]
+                messages_of_channel = history_of_channel.body['messages'][:50]
                 prev_messages[channel_id] = messages_of_channel
 
         self.prev_messages = prev_messages
@@ -130,17 +130,13 @@ class Bot(object):
         for channel in channel_lst:
             if len(self.prev_messages[channel]):
                 lst_msg_of_channel = self.prev_messages[channel][0]['ts']
-                # lst_msgs[channel] = self.prev_messages[channel][0]['ts']
-        #
-        # for channel in channel_lst:
-        #     if lst_msgs.has_key(channel):
-        #         lst_msg_of_channel = lst_msgs[channel]
                 messages = self.client.channels.history(channel, oldest=lst_msg_of_channel)
-                new_msgs[channel] = messages.body['messages']
+                if messages is not None:
+                    new_msgs[channel] = messages.body['messages']
 
         self.new_msgs = new_msgs
         self.add_messages()
-        
+
         self.get_mods()
         self.log_messages()
 
@@ -151,7 +147,9 @@ class Bot(object):
 
         for key in self.new_msgs.keys():
             if self.prev_messages.has_key(key):
-                self.prev_messages[key].extend(self.new_msgs[key])
+                # self.prev_messages[key].extend(self.new_msgs[key])
+                self.new_msgs[key].extend(self.prev_messages[key])
+                self.prev_messages[key] = self.new_msgs[key][:]
 
             if len(self.prev_messages[key]) > 50:
                 self.prev_messages[key] = self.prev_messages[key][:50]
@@ -228,4 +226,4 @@ class Bot(object):
 
         return reporters, verdict, ign, mod, link
 
-HRCBot = Bot()
+# HRCBot = Bot()
