@@ -11,22 +11,21 @@ except ImportError:
     print("slacker not able to import, check installation.")
     exit()
 
-import os
-import datetime
 import config
-import features
 
 
 class Bot(object):
     def __init__(self):
-        self.get_config()
-        self.create_client()
-        self.create_channels()
-        self.determine_users_of_channel()
-        self.create_ID_user_database()
-        self.get_previous_messages()
+        self._get_config()
+        self._create_client()
+        self._create_channels()
+        self._determine_users_of_channel()
+        self._create_id_user_database()
+        self._get_previous_messages()
+        self.new_msgs = {}
+        self.mod_lst = []
 
-    def get_config(self):
+    def _get_config(self):
         """ Configures the slack bot for the network's Slack """
 
         self.client_id = config.client_id
@@ -34,25 +33,26 @@ class Bot(object):
         self.code = config.code  # unknown how this works, doesn't seem to matter...
         self.redirect_uri = config.redirect_uri
         self.bot_token = config.bot_token  # HRCBot - requires integration
+        self.channel_keyword = config.channel_keyword
 
-    def create_client(self):
+    def _create_client(self):
         """ Creates self.client for convenience """
 
         self.client = slacker.Slacker(self.bot_token)
 
-    def create_channels(self):
+    def _create_channels(self):
         """ Determines channels to log reports from, channel must have "reports" in its name """
 
         user_channels = {}
         channels = self.client.channels.list()
         self.channels = channels
         for channel in channels.body['channels']:
-            if "reports" in channel['name']:
+            if self.channel_keyword in channel['name']:
                 user_channels[channel['id']] = channel['name']
         self.user_channels = user_channels
         # {<id of channel>: <name of channel>}
 
-    def determine_users_of_channel(self):
+    def _determine_users_of_channel(self):
         """ Determines which users are in which channel """
         users = {}
         for channel in self.channels.body['channels']:
@@ -60,7 +60,7 @@ class Bot(object):
         self.users_by_channel = users
         # {<id of chat>: <id of members of chat>}
 
-    def create_ID_user_database(self):
+    def _create_id_user_database(self):
         """ Dictionary to obtain a username from a given ID """
         all_users = { }
         members = self.client.users.list().body['members']
@@ -93,7 +93,7 @@ class Bot(object):
                 return key
         return None
 
-    def get_previous_messages(self):
+    def _get_previous_messages(self):
         """Adds the previous 50 messages to a dictionary to store for later"""
         prev_messages = {}
         for channel in self.channels.body['channels']:
@@ -105,7 +105,7 @@ class Bot(object):
 
         self.prev_messages = prev_messages
 
-    def get_mods(self):
+    def _get_mods(self):
         """
         Determines the moderators of the network for verification purposes
         Anyone with Slack rank 'Admin', 'Owner' or 'Primary Owner' is assumed to be a moderator
@@ -123,7 +123,7 @@ class Bot(object):
         Gets the new messages in the appropriate slack groups, adds to prev_messages and logs them
         """
 
-        self.create_channels()  # Allows for new channels
+        self._create_channels()  # Allows for new channels
         channel_lst = self.user_channels
         new_msgs = {}
         
@@ -135,57 +135,36 @@ class Bot(object):
                     new_msgs[channel] = messages.body['messages']
 
         self.new_msgs = new_msgs
-        self.add_messages()
+        self._add_messages()
 
-        self.get_mods()
-        self.log_messages()
+        self._get_mods()
+        return self._log_messages()
 
-    def add_messages(self):
+    def _add_messages(self):
         """
         Adds messages obtained from get_new_messages to prev_messages and removes old messages
         """
 
         for key in self.new_msgs.keys():
-            if self.prev_messages.has_key(key):
-                # self.prev_messages[key].extend(self.new_msgs[key])
-                self.new_msgs[key].extend(self.prev_messages[key])
-                self.prev_messages[key] = self.new_msgs[key][:]
+            if key in self.prev_messages.keys():
+                self.prev_messages[key] = self.new_msgs[key] + self.prev_messages[key]
 
-            if len(self.prev_messages[key]) > 50:
-                self.prev_messages[key] = self.prev_messages[key][:50]
+                if len(self.prev_messages[key]) > 50:
+                    self.prev_messages[key] = self.prev_messages[key][:50]
 
-    def log_messages(self):
-        """
-        Logs the new messages obtained from get_new_messages in reports
-        Allows for multiple people to receive credit for the same report
-        """
+    def _log_messages(self):
+        """Logs the new messages obtained from get_new_messages in reports"""
 
+        reports = []
         for channel in self.new_msgs.keys():
             for msg in self.new_msgs[channel]:
                 if msg['text'][0] == "!":
-                    self.handle_command(msg, channel)
+                    rep = self._make_report(msg, channel)
+                    reports.append(rep)
 
-    def handle_command(self, msg, channel):
-        """
-        Handles the psuedo-commands coded into this system.
-        :param msg: Slack message object - slacker message object of the message with the command
-        :param channel: string - Slack channel ID the message is in
-        """
+        return reports
 
-        reports = []
-        command = msg['text'][1:msg['text'].find(" ")]
-
-        if msg['user'] in self.mod_lst:
-            reporters, verdict, ign, mod, link = self.make_report(msg, channel)
-            if command == "remove":
-                features.remove_report(ign, msg['user'])
-                return
-            for reporter in reporters:
-                reports.append([reporter, ign, verdict, mod, channel, link])
-
-        self.new_reports = reports
-
-    def make_report(self, msgobj, channel):
+    def _make_report(self, msgobj, channel):
         """
         Parses the message into an easily manipulated list for further analysis
         :param msgobj: dictionary - slacker message object
@@ -205,9 +184,11 @@ class Bot(object):
         endpt = min(len(self.prev_messages[channel]), 50)
         
         reporters = []
+        rep_names = []
         for msg in self.prev_messages[channel][:endpt]:
             if msg['text'].find(ign) != -1 and msg['user'] not in self.mod_lst:
                 reporters.append(msg['user'])
+                rep_names.append(self.user_id_name_database[msg['user']])
                 if "attachments" in msg.keys():
                     link = msg['attachments'][0]['from_url'].encode('utf-8')
                     if link.find("youtu") == -1:  # don't want a1.kitpvp!
@@ -224,6 +205,6 @@ class Bot(object):
         if 'link' not in locals():
             link = "NULL"
 
-        return reporters, verdict, ign, mod, link
+        return reporters, rep_names, ign, verdict, mod, channel, link
 
-# HRCBot = Bot()
+HRCBot = Bot()

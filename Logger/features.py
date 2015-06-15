@@ -44,7 +44,6 @@ def remove_report(ign, userid):
     if mysqlwork.remove_row(ign):
         message = "Report successfully removed!"
         slackbot.HRCBot.send_dm(userid, message)
-        pass
 
 def add_report(message, channel):
     # This will allow reports to be added to the database
@@ -63,3 +62,9 @@ def add_report(message, channel):
     report = [reporter, ign, verdict, mod, channel, link]
     mysqlwork.add_records(config.table, report)
     # Either direct message or some way to confirm that the report was added successfully
+
+def get_records_from_id(id, timeframe=-1, table=config.table):
+    return mysqlwork.retieve_values_id(id, timeframe=-1, table=config.table)
+
+def get_recrods_from_name(name, timeframe=-1, table=config.table):
+    return mysqlwork.retrieve_values_name(name, timeframe=-1, table=config.table)

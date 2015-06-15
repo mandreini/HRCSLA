@@ -1,8 +1,0 @@
-#ban list. Add key words that you're chat uses to determine a banned verdict, case insensitive
-#can be used with other languages, e.g. bandido (banned in Portuguese)
-#notice: may not support non-alpha numeric characters, such as 'ä'
-#DO NOT change the name of this document. Doing so removes the capability
-#to categorize reports!!! Only alter text below this line.
-banned
-b&
-b4nned
