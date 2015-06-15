@@ -1,0 +1,6 @@
+#clean list. Add key words that your chat uses to determine a clean verdict, case insensitive
+#can be used with other languages, e.g. limpo (clean in Portuguese)
+#notice: may not support non-alpha numeric characters, such as 'ä'
+#DO NOT change the title of this document. Doing so will remove the ability
+#to categorize the reports!! Only alter text below this line.
+clean

@@ -10,11 +10,12 @@ except ImportError:
     print("config.py file not found.")
 
 try:
+    import customization
     import features
     import slackbot
     import mysqlwork
 except ImportError:
-    print("features, slackbot or mysqlwork not able to import.")
+    print("customization, features, slackbot or mysqlwork not able to import.")
     exit()
 
 try:
@@ -28,23 +29,19 @@ except ImportError:
 def start_log():  # infinite loop, runs main() every minute
     t = time.gmtime()
     while True:
-        if time.gmtime()[2] != t[2]:
-            mysqlwork.remove_duplicates(table)
         if time.gmtime()[4] != t[4]:
+            bans, cleans = customization.open_files()
             main()
             t = time.gmtime()
 
 
 def main():
     """ Main procedure: gets new messages and logs them """
-    # try:
-    new_reports = hrcbot.get_new_messages()
-    for new_report in new_reports:
-        if not mysqlwork.check_for_existing_report(new_report):
-            write_report(new_report)
-            mysqlwork.add_records(table, new_report)
-    # except:
-    #     print "Connection failed"
+
+    hrcbot.get_new_messages()
+    for new_report in hrcbot.new_reports:
+        write_report(new_report)
+        mysqlwork.add_records(table, new_report)
 
 
 def write_report(report):
@@ -66,17 +63,12 @@ def write_report(report):
 # Set up report structure
 hrcbot = slackbot.Bot()
 table = config.table
-
-# verdicts
-bans = ["banned", "b&", "b4nned"]
-cleans = ["clean"]
-kicks = ["kicked"]
-mutes = ["mutes"]
+bans, cleans = customization.open_files()
 
 channel_names = []
 for key in hrcbot.user_channels.keys():
     channel_names.append(hrcbot.user_channels[key])
 
-print("Logging the reports from " + ', '.join(channel_names))
+print("Logging the reports from " + ', '.join(channel_names))  # change
 
 start_log()  # start!
