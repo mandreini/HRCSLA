@@ -8,9 +8,8 @@
     </data-source>
     <data-source name="SQL Server - hrc_test@31.193.2.78" uuid="dfb9cfc0-a826-4edb-b588-f3492e3346ba">
       <secret-storage>master_key</secret-storage>
+      <first-sync>true</first-sync>
       <user-name>hrctest</user-name>
-      <schema-pattern>hrc_test.*</schema-pattern>
-      <default-schemas>hrc_test.*</default-schemas>
     </data-source>
   </component>
 </project>
