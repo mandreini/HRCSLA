@@ -115,25 +115,20 @@ def _check_for_duplicates(db, cursor, table=config.table):
 def remove_duplicates(table=config.table):
     """
     This will remove duplicate reports that manage to slip through my net of checks somehow
-    sqlcode from http://dotnetmob.blogspot.in/2015/04/delete-duplicate-rows-in-sql-server.html
+    sqlcode from http://stackoverflow.com/questions/4685173/delete-all-duplicate-rows-except-for-one-in-mysql
     :param table: string - table to check for duplicate reports
     """
 
     db, cursor = _connect()
     if _check_for_duplicates(db, cursor, table):
         sqlcode = """
-            WITH CTE as
-            (
-              SELECT *, ROW_NUMBER() OVER
-                (
-                PARTITION BY UserID, IGN, Verdict, Channel
-                ORDER BY UserID, IGN, Verdict, Channel
-                ) AS dupes
-              FROM %s
-            )
-
-            DELETE FROM CTE WHERE dupes <> 1;
-            """ % table
+            DELETE FROM %s
+              WHERE id NOT IN (
+                SELECT * FROM (
+                  SELECT MIN(n.id) FROM brawl_records_test n
+                  GROUP BY n.UserID, n.IGN, n.Verdict, n.ModID, n.Channel
+                ) x
+              ); """ % table
 
         db.execute(sqlcode)
         db.commit()
